@@ -1,0 +1,2 @@
+Django==4.2.2
+git+ssh://git@github.com/DNS-40441-SUT-Project/connection-utils.git
