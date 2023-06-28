@@ -7,7 +7,7 @@ class ServerNormalSocketConnection(ServerSocketConnection):
 
 
 class ServerPollConnection(ServerSocketConnection):
-    _port = settings.POLL_PORT
+    _listen_port = settings.POLL_PORT
 
 
 def accept_connection():
