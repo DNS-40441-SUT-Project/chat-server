@@ -50,8 +50,12 @@ class Command(BaseCommand):
 
     def handle_poll_connection(self, conn: ServerPollConnection, addr):
         self.log(f'new poll connection from {addr}')
-        message = conn.recieve_decrypted(settings.PRIVATE_KEY)
-        handle_poll_request(conn, message)
+        while True:
+            message = conn.recieve_decrypted(settings.PRIVATE_KEY)
+            if conn.is_closed:
+                self.log_error(f'connection from {addr} has been closed!')
+                break
+            handle_poll_request(conn, message)
 
     def thread_start_poll_connections(self):
         self.log('accepting poll connections!')
