@@ -1,5 +1,6 @@
 import signal
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 import threading
@@ -37,18 +38,18 @@ class Command(BaseCommand):
             ),
         )
 
-    def handle_connection(self, conn, addr):
+    def handle_connection(self, conn: ServerNormalSocketConnection, addr):
         self.log(f'new connection from {addr}')
         while True:
-            message = conn.receive()
+            message = conn.recieve_decrypted(settings.PRIVATE_KEY)
             if conn.is_closed:
                 self.log_error(f'connection from {addr} has been closed!')
                 break
             handle_request(conn, message)
 
-    def handle_poll_connection(self, conn, addr):
+    def handle_poll_connection(self, conn: ServerPollConnection, addr):
         self.log(f'new poll connection from {addr}')
-        message = conn.receive()
+        message = conn.recieve_decrypted(settings.PRIVATE_KEY)
         handle_poll_request(conn, message)
 
     def thread_start_poll_connections(self):

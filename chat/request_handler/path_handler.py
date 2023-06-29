@@ -12,8 +12,5 @@ def handle_request(conn: ServerNormalSocketConnection, message: SocketMessage):
     if re.search('^health_check$', message.path):
         print(message.path, '\t', message.body)
         conn.send(path='health_check', data='done!')
-    if re.search('^health_check_enc$', message.path):
-        print(message.path, '\t', rsa.decrypt(message.body, settings.PRIVATE_KEY))
-        conn.send(path='health_check', data='done!')
     if re.search('^start_session$', message.path):
-        handle_start_session(message.headers, message.body)
+        handle_start_session(conn, message.headers, message.body)
