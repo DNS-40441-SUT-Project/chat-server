@@ -1,2 +1,4 @@
 Django==4.2.2
+rsa==4.9
+cryptography==41.0.1
 git+ssh://git@github.com/DNS-40441-SUT-Project/connection-utils.git

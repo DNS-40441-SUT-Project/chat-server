@@ -9,6 +9,10 @@ class LoginUserContext:
     poll_connection: ServerPollConnection
     symmetric_key: str
 
+    @property
+    def encode_symmetric_key(self):
+        return self.symmetric_key.encode('utf-8')
+
 
 class PollConnections:
     _all_poll_connections: Dict[str, LoginUserContext] = {}
