@@ -129,6 +129,6 @@ with open('_base/private.key', mode='rb') as privatefile:
     keydata = privatefile.read()
 PRIVATE_KEY = rsa.PrivateKey.load_pkcs1(keydata)
 
-with open('_base/server_public.key', 'rb') as publicfile:
+with open('_base/public.key', 'rb') as publicfile:
     pkeydata = publicfile.read()
 PUBLIC_KEY = rsa.PublicKey.load_pkcs1(pkeydata)
