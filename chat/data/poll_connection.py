@@ -3,6 +3,11 @@ from typing import Dict
 from chat.utils.socket_connection import ServerPollConnection
 
 
+class LoginUserContext:
+    poll_connection: ServerPollConnection
+    symmetric_key: str
+
+
 class PollConnections:
     _all_poll_connections: Dict[str, ServerPollConnection] = {}
 
