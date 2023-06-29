@@ -45,6 +45,7 @@ class Command(BaseCommand):
             if conn.is_closed:
                 self.log_error(f'connection from {addr} has been closed!')
                 break
+            # 2
             handle_request(conn, message)
 
     def handle_poll_connection(self, conn: ServerPollConnection, addr):

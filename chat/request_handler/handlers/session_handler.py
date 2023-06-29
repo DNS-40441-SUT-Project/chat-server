@@ -18,11 +18,13 @@ def handle_start_session(conn: ServerNormalSocketConnection, headers, data):
     # TODO: what if user not found or not online
     other_user: User = User.objects.get(username=other_username)
     poll_connection = PollConnections.get(other_user.username)
+    # 3
     poll_connection.send_encrypted(
         path='start_session_request',
         data={'from': user.username, 'T': datetime.now().timestamp(), 'KA': data['KA']},
         public_key=other_user.pub.rsa_public_key,
     )
+    # 6
     message: SocketMessage = poll_connection.recieve_decrypted(private_key=settings.PRIVATE_KEY)
     data_from_b = message.body
     if data['T'] - datetime.now().timestamp() > 10:
@@ -30,8 +32,15 @@ def handle_start_session(conn: ServerNormalSocketConnection, headers, data):
     if data['to'] != user.username:
         raise SecurityException()
 
+    # 7
     conn.send_encrypted(path='start_session', data={
         'from': other_username, 'T': data['T'], 'KB': data_from_b['KB'],
         'M': data_from_b['M'],
     }, public_key=user.pub.rsa_public_key)
+
+    # 10
+    conn.recieve_decrypted()
+
+    # 11
+    poll_connection.send_encrypted()
 
