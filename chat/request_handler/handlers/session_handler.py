@@ -19,13 +19,14 @@ def handle_start_session(conn: ServerNormalSocketConnection, headers, data):
     other_user: User = User.objects.get(username=other_username)
     poll_connection = PollConnections.get(other_user.username).poll_connection
     # 3
-    poll_connection.send_encrypted(
+    poll_connection.send_sym_encrypted(
         path='start_session_request',
         data={'from': user.username, 'T': datetime.now().timestamp(), 'KA': data['KA']},
-        public_key=other_user.pub.rsa_public_key,
+        symmetric_key=PollConnections.get(other_user.username).encode_symmetric_key,
     )
     # 6
-    message: SocketMessage = poll_connection.recieve_decrypted(private_key=settings.PRIVATE_KEY)
+    message: SocketMessage = poll_connection.recieve_sym_decrypted(
+        PollConnections.get(other_user.username).encode_symmetric_key)
     data_from_b = message.body
     if data_from_b['T'] - datetime.now().timestamp() > 10:
         raise SecurityException()
@@ -33,13 +34,13 @@ def handle_start_session(conn: ServerNormalSocketConnection, headers, data):
         raise SecurityException()
 
     # 7
-    conn.send_encrypted(path='start_session', data={
+    conn.send_sym_encrypted(path='start_session', data={
         'from': other_username, 'T': datetime.now().timestamp(), 'KB': data_from_b['KB'],
         'M': data_from_b['M'],
-    }, public_key=user.pub.rsa_public_key)
+    }, symmetric_key=PollConnections.get(user.username).encode_symmetric_key)
 
     # 10
-    message_10: SocketMessage = conn.recieve_decrypted(settings.PRIVATE_KEY)
+    message_10: SocketMessage = conn.recieve_sym_decrypted(PollConnections.get(user.username).encode_symmetric_key)
     data_10 = message.body
     headers = message_10.headers
     print(headers)
@@ -51,14 +52,14 @@ def handle_start_session(conn: ServerNormalSocketConnection, headers, data):
         raise SecurityException()
 
     # 11
-    poll_connection.send_encrypted(path='resume_session',
-                                   data={'from': user.username, 'T': datetime.now().timestamp(),
-                                         'encrypted_hash_m': data_10['encrypted_hash_m'],
-                                         'encrypted_m_prim': data_10['encrypted_m_prim']},
-                                   public_key=other_user.pub.rsa_public_key, )
+    poll_connection.send_sym_encrypted(path='resume_session',
+                                       data={'from': user.username, 'T': datetime.now().timestamp(),
+                                             'encrypted_hash_m': data_10['encrypted_hash_m'],
+                                             'encrypted_m_prim': data_10['encrypted_m_prim']},
+                                       symmetric_key=PollConnections.get(other_user.username).encode_symmetric_key, )
 
     # 14
-    message: SocketMessage = poll_connection.recieve_decrypted(private_key=settings.PRIVATE_KEY)
+    message: SocketMessage = poll_connection.recieve_sym_decrypted(PollConnections.get(other_user.username).encode_symmetric_key)
     data_14 = message.body
     if data_14['T'] - datetime.now().timestamp() > 10:
         raise SecurityException()
