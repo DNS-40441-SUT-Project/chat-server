@@ -27,20 +27,44 @@ def handle_start_session(conn: ServerNormalSocketConnection, headers, data):
     # 6
     message: SocketMessage = poll_connection.recieve_decrypted(private_key=settings.PRIVATE_KEY)
     data_from_b = message.body
-    if data['T'] - datetime.now().timestamp() > 10:
+    if data_from_b['T'] - datetime.now().timestamp() > 10:
         raise SecurityException()
-    if data['to'] != user.username:
+    if data_from_b['to'] != user.username:
         raise SecurityException()
 
     # 7
     conn.send_encrypted(path='start_session', data={
-        'from': other_username, 'T': data['T'], 'KB': data_from_b['KB'],
+        'from': other_username, 'T': datetime.now().timestamp(), 'KB': data_from_b['KB'],
         'M': data_from_b['M'],
     }, public_key=user.pub.rsa_public_key)
 
     # 10
-    conn.recieve_decrypted()
+    message_10: SocketMessage = conn.recieve_decrypted(settings.PRIVATE_KEY)
+    data_10 = message.body
+    headers = message_10.headers
+    print(headers)
+    print(data_10)
+    user = authenticated_user(**headers['authentication'])
+    if data_10['T'] - datetime.now().timestamp() > 10:
+        raise SecurityException()
+    if data_10['to'] != other_user.username:
+        raise SecurityException()
 
     # 11
-    poll_connection.send_encrypted()
+    poll_connection.send_encrypted(path='resume_session',
+                                   data={'from': user.username, 'T': datetime.now().timestamp(),
+                                         'encrypted_hash_m': data_10['encrypted_hash_m'],
+                                         'encrypted_m_prim': data_10['encrypted_m_prim']},
+                                   public_key=other_user.pub.rsa_public_key, )
 
+    # 14
+    message: SocketMessage = poll_connection.recieve_decrypted(private_key=settings.PRIVATE_KEY)
+    data_14 = message.body
+    if data_14['T'] - datetime.now().timestamp() > 10:
+        raise SecurityException()
+    if data_14['to'] != user.username:
+        raise SecurityException()
+
+    print(vars(message))
+
+    # 15
