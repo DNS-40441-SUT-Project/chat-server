@@ -1,9 +1,16 @@
 import re
 
-from .handlers import *
+import rsa
+from connection_utils.socket_message import SocketMessage
+from django.conf import settings
+
+from ..utils.socket_connection import ServerNormalSocketConnection
 
 
-def handle_request(conn, message):
-    print(message)
+def handle_request(conn: ServerNormalSocketConnection, message: SocketMessage):
     if re.search('^health_check$', message.path):
+        print(message.path, '\t', message.body)
+        conn.send(path='health_check', data='done!')
+    if re.search('^health_check_enc$', message.path):
+        print(message.path, '\t', rsa.decrypt(message.body, settings.PRIVATE_KEY))
         conn.send(path='health_check', data='done!')
