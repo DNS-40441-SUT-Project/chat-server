@@ -1,6 +1,6 @@
 from connection_utils.socket_message import SocketMessage
 
-from chat.data import PollConnections
+from chat.data import PollConnections, LoginUserContext
 from chat.db_controller import login, authenticated_user
 from chat.utils.socket_connection import ServerPollConnection
 
@@ -9,7 +9,7 @@ def handle_poll_request(conn: ServerPollConnection, message: SocketMessage):
     if message.path == 'login':
         try:
             user = login(**message.body)
-            PollConnections.add(user.username, conn)
+            PollConnections.add(user.username, LoginUserContext(conn, None))
             conn.send('login', data={'status': '200'})
         except Exception as e:
             conn.send('login', data={'status': '400', 'msg': 'Log in Failed'})

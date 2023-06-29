@@ -17,7 +17,7 @@ def handle_start_session(conn: ServerNormalSocketConnection, headers, data):
     other_username = data['to']
     # TODO: what if user not found or not online
     other_user: User = User.objects.get(username=other_username)
-    poll_connection = PollConnections.get(other_user.username)
+    poll_connection = PollConnections.get(other_user.username).poll_connection
     # 3
     poll_connection.send_encrypted(
         path='start_session_request',
