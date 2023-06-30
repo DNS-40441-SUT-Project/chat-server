@@ -1,2 +1,3 @@
 from .session_handler import handle_start_session
 from .handle_symmetric_key import handle_symmetric_key
+from .handle_message_to_user import handle_message_to_user
