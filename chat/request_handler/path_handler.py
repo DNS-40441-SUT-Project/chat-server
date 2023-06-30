@@ -1,11 +1,10 @@
-
 import re
 
 import rsa
 from connection_utils.socket_message import SocketMessage
 from django.conf import settings
 
-from .handlers import handle_start_session, handle_symmetric_key
+from .handlers import handle_start_session, handle_symmetric_key, handle_message_to_user
 from ..utils.socket_connection import ServerNormalSocketConnection
 
 
@@ -17,3 +16,5 @@ def handle_request(conn: ServerNormalSocketConnection, message: SocketMessage):
         handle_start_session(conn, message.headers, message.body)
     if re.search('^symmetric_key$', message.path):
         handle_symmetric_key(conn, message)
+    if re.search('^send_message_to_user$', message.path):
+        handle_message_to_user(conn, message)
