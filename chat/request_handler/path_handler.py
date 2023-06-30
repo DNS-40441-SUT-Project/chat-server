@@ -1,8 +1,6 @@
 import re
 
-import rsa
 from connection_utils.socket_message import SocketMessage
-from django.conf import settings
 
 from .handlers import *
 from ..utils.socket_connection import ServerNormalSocketConnection
@@ -22,5 +20,7 @@ def handle_request(conn: ServerNormalSocketConnection, message: SocketMessage):
         handle_message_to_user(conn, message)
     if re.search('^register$', message.path):
         handle_register(conn, message)
+    if re.search('^logout$', message.path):
+        handle_logout(conn, message)
     if re.search('^set_public_key$', message.path):
         handle_set_public_key(conn, message)
