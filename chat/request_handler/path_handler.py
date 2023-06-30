@@ -4,7 +4,7 @@ import rsa
 from connection_utils.socket_message import SocketMessage
 from django.conf import settings
 
-from .handlers import handle_start_session, handle_symmetric_key, handle_message_to_user, handle_register, handle_set_public_key
+from .handlers import *
 from ..utils.socket_connection import ServerNormalSocketConnection
 
 
@@ -12,6 +12,8 @@ def handle_request(conn: ServerNormalSocketConnection, message: SocketMessage):
     print(message.path, '\t', message.body)
     if re.search('^health_check$', message.path):
         conn.send(path='health_check', data='done!')
+    if re.search('^get_online_users$', message.path):
+        handle_get_online_users(conn, message)
     if re.search('^start_session$', message.path):
         handle_start_session(conn, message.headers, message.body)
     if re.search('^symmetric_key$', message.path):
