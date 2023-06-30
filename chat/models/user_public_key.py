@@ -7,6 +7,14 @@ from ..models.base import BaseModel
 
 
 class UserPublicKey(BaseModel):
+    @classmethod
+    def create_or_update_key(cls, user, key):
+        qs = cls.objects.filter(user=user)
+        if qs.exists():
+            qs.update(key=key)
+        else:
+            cls.objects.create(user=user, key=key)
+
     user = models.OneToOneField(
         to='chat.User',
         on_delete=models.CASCADE,

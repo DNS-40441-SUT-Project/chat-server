@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from ...models import User
+from ...models import User, UserPublicKey
 
 
 def register(username, password):
