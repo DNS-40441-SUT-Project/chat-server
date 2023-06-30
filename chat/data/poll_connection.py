@@ -10,7 +10,7 @@ class LoginUserContext:
     symmetric_key: str
 
     @property
-    def encode_symmetric_key(self):
+    def encoded_symmetric_key(self):
         return self.symmetric_key.encode('utf-8')
 
 
