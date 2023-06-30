@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 
 from chat.utils.socket_connection import ServerPollConnection
 
@@ -32,3 +32,7 @@ class PollConnections:
     @classmethod
     def clear(cls):
         cls._all_poll_connections.clear()
+
+    @classmethod
+    def get_all_usernames(cls) -> List[str]:
+        return list(cls._all_poll_connections.keys())
