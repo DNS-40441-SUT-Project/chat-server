@@ -26,3 +26,5 @@ def handle_request(conn: ServerNormalSocketConnection, message: SocketMessage):
         handle_set_public_key(conn, message)
     if re.search('^create_group$', message.path):
         handle_create_group(conn, message)
+    if re.search('^get_groups$', message.path):
+        handle_get_groups(conn, message)

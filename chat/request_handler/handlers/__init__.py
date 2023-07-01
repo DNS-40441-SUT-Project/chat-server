@@ -6,3 +6,4 @@ from .handle_set_public_key import handle_set_public_key
 from .handle_get_online_users import handle_get_online_users
 from .handle_logout import handle_logout
 from .handle_create_group import handle_create_group
+from .handle_get_groups import handle_get_groups
