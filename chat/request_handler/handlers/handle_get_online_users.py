@@ -14,11 +14,11 @@ def handle_get_online_users(conn: ServerNormalSocketConnection, message: SocketM
     conn.send_sym_encrypted(
         path='result_of_online_users',
         data=dict(
-            signature_value=signature_value,
             status=signature_value,
             results=[_ for _ in PollConnections.get_all_usernames() if _ != user.username]
         ),
         headers=dict(
+            signature_value=signature_value,
             signature=sign_data(signature_value),
             T=datetime.now().timestamp(),
         ),
