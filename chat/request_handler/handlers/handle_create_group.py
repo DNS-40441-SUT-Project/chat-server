@@ -11,9 +11,9 @@ from chat.utils.socket_connection import ServerNormalSocketConnection
 def handle_create_group(conn: ServerNormalSocketConnection, message: SocketMessage):
     user = authenticated_user(**message.headers['authentication'])
     signature_value = '200'
-    create_group(admin_username=user.username, group_name=message.body['group_name'])
+    g = create_group(admin_username=user.username, group_name=message.body['group_name'])
     conn.send_sym_encrypted(
-        path='group created successfully',
+        path=str(g.id),
         data=dict(
             status=signature_value,
         ),

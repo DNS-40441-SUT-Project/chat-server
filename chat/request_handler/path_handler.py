@@ -28,3 +28,5 @@ def handle_request(conn: ServerNormalSocketConnection, message: SocketMessage):
         handle_create_group(conn, message)
     if re.search('^get_groups$', message.path):
         handle_get_groups(conn, message)
+    if re.search('^add_user_to_group$', message.path):
+        handle_add_user_to_group(conn, message)
