@@ -22,9 +22,9 @@ def handle_logout(conn: ServerNormalSocketConnection, message: SocketMessage):
         path='logout was successful',
         data=dict(
             status=signature_value,
-            signature_value=signature_value
         ),
         headers=dict(
+            signature_value=signature_value,
             signature=sign_data(signature_value),
             T=datetime.now().timestamp(),
         ),
