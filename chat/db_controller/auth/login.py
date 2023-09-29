@@ -9,7 +9,7 @@ def login(username, password):
             user.save()
             return user
     except User.DoesNotExist:
-        pass
+        raise WrongAuthentication
 
 
 class WrongAuthentication(Exception):
